@@ -52,6 +52,13 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				trading: {
+					'gradient-start': 'hsl(var(--trading-gradient-start))',
+					'gradient-end': 'hsl(var(--trading-gradient-end))',
+					profit: 'hsl(var(--profit-green))',
+					loss: 'hsl(var(--loss-red))',
+					'result-bg': 'hsl(var(--result-bg))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
