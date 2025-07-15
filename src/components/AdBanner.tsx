@@ -15,25 +15,25 @@ export const AdBanner: React.FC<AdBannerProps> = ({
 }) => {
   useEffect(() => {
     try {
-      // Load Propeller Ads
+      // Load MonetAG Ads
       const script = document.createElement('script');
       script.type = 'text/javascript';
-      script.src = `https://mulkfinopae.com/400/${zoneId}`;
+      script.src = `https://www.topcreativeformat.com/${zoneId}`;
       script.async = true;
       
-      const container = document.getElementById(`propeller-${zoneId}`);
+      const container = document.getElementById(`monetag-${zoneId}`);
       if (container && !container.querySelector('script')) {
         container.appendChild(script);
       }
     } catch (error) {
-      console.error('Propeller Ads error:', error);
+      console.error('MonetAG Ads error:', error);
     }
   }, [zoneId]);
 
   return (
     <div className={`ad-container ${className}`}>
       <div 
-        id={`propeller-${zoneId}`}
+        id={`monetag-${zoneId}`}
         style={{ 
           width: `${width}px`, 
           height: `${height}px`,

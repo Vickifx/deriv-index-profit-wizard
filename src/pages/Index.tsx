@@ -14,7 +14,7 @@ const Index = () => {
         <div className="mb-6">
           <div className="text-center text-sm text-primary-foreground/60 mb-2">Advertisement</div>
           <AdBanner 
-            zoneId="5955778" // Replace with your Propeller zone ID
+            zoneId="123458" // Replace with your MonetAG zone ID
             width={728}
             height={90}
             className="max-w-4xl mx-auto min-h-[90px]"
@@ -42,7 +42,7 @@ const Index = () => {
             <div className="mt-8">
               <div className="text-center text-sm text-primary-foreground/60 mb-2">Sponsored Content</div>
               <AdBanner 
-                zoneId="5955779" // Replace with your Propeller zone ID
+                zoneId="123459" // Replace with your MonetAG zone ID
                 width={728}
                 height={250}
                 className="min-h-[250px]"
