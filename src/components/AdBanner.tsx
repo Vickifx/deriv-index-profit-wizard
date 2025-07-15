@@ -1,38 +1,45 @@
 import React, { useEffect } from 'react';
 
 interface AdBannerProps {
-  adSlot: string;
-  adFormat?: string;
-  fullWidthResponsive?: boolean;
+  zoneId: string;
+  width?: number;
+  height?: number;
   className?: string;
 }
 
 export const AdBanner: React.FC<AdBannerProps> = ({
-  adSlot,
-  adFormat = "auto",
-  fullWidthResponsive = true,
+  zoneId,
+  width = 300,
+  height = 250,
   className = ""
 }) => {
   useEffect(() => {
     try {
-      // Push ad to AdSense queue
-      if (typeof window !== 'undefined' && (window as any).adsbygoogle) {
-        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push({});
+      // Load Propeller Ads
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = `https://mulkfinopae.com/400/${zoneId}`;
+      script.async = true;
+      
+      const container = document.getElementById(`propeller-${zoneId}`);
+      if (container && !container.querySelector('script')) {
+        container.appendChild(script);
       }
     } catch (error) {
-      console.error('AdSense error:', error);
+      console.error('Propeller Ads error:', error);
     }
-  }, []);
+  }, [zoneId]);
 
   return (
     <div className={`ad-container ${className}`}>
-      <ins
-        className="adsbygoogle"
-        style={{ display: 'block' }}
-        data-ad-client="ca-pub-XXXXXXXXXX" // Replace with your AdSense Publisher ID
-        data-ad-slot={adSlot}
-        data-ad-format={adFormat}
-        data-full-width-responsive={fullWidthResponsive.toString()}
+      <div 
+        id={`propeller-${zoneId}`}
+        style={{ 
+          width: `${width}px`, 
+          height: `${height}px`,
+          margin: '0 auto',
+          display: 'block'
+        }}
       />
     </div>
   );
