@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Calculator, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -43,6 +44,7 @@ const tradingInstruments = [
 
 export const PipCalculator: React.FC = () => {
   const [selectedSymbol, setSelectedSymbol] = useState('R_10');
+  const [tradeDirection, setTradeDirection] = useState('buy');
   const [entryPrice, setEntryPrice] = useState('');
   const [exitPrice, setExitPrice] = useState('');
   const [volume, setVolume] = useState('1');
@@ -100,8 +102,20 @@ export const PipCalculator: React.FC = () => {
 
     const pointValue = 1 / Math.pow(10, precision);
     const pipValue = pointValue * vol * contract;
-    const totalPips = (exit - entry) / pointValue;
-    const profit = pipValue * totalPips;
+    
+    // Calculate pips based on trade direction
+    let totalPips: number;
+    let profit: number;
+    
+    if (tradeDirection === 'buy') {
+      // For buy trades: profit when exit > entry
+      totalPips = (exit - entry) / pointValue;
+      profit = pipValue * totalPips;
+    } else {
+      // For sell trades: profit when exit < entry
+      totalPips = (entry - exit) / pointValue;
+      profit = pipValue * totalPips;
+    }
 
     setResult({
       pipValue,
@@ -145,6 +159,28 @@ export const PipCalculator: React.FC = () => {
                   ))}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Trade Direction</Label>
+              <RadioGroup 
+                value={tradeDirection} 
+                onValueChange={setTradeDirection}
+                className="flex gap-6"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="buy" id="buy" />
+                  <Label htmlFor="buy" className="text-sm font-medium cursor-pointer">
+                    Buy
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="sell" id="sell" />
+                  <Label htmlFor="sell" className="text-sm font-medium cursor-pointer">
+                    Sell
+                  </Label>
+                </div>
+              </RadioGroup>
             </div>
 
             <div className="space-y-2">
