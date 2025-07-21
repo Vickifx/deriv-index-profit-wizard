@@ -68,7 +68,7 @@ export const PipCalculator: React.FC = () => {
         const data = JSON.parse(event.data);
         if (data.tick && data.tick.quote) {
           setCurrentPrice(data.tick.quote);
-          setEntryPrice(data.tick.quote.toString());
+          setExitPrice(data.tick.quote.toString());
           ws.close();
         }
       };
@@ -185,13 +185,25 @@ export const PipCalculator: React.FC = () => {
 
             <div className="space-y-2">
               <Label htmlFor="entry">Entry Price</Label>
+              <Input
+                id="entry"
+                type="number"
+                step="any"
+                value={entryPrice}
+                onChange={(e) => setEntryPrice(e.target.value)}
+                placeholder="0.00"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="exit">Exit Price</Label>
               <div className="flex gap-2">
                 <Input
-                  id="entry"
+                  id="exit"
                   type="number"
                   step="any"
-                  value={entryPrice}
-                  onChange={(e) => setEntryPrice(e.target.value)}
+                  value={exitPrice}
+                  onChange={(e) => setExitPrice(e.target.value)}
                   placeholder="0.00"
                 />
                 <Button 
@@ -208,18 +220,6 @@ export const PipCalculator: React.FC = () => {
                   Current: {currentPrice.toFixed(selectedInstrument?.precision || 2)}
                 </p>
               )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="exit">Exit Price</Label>
-              <Input
-                id="exit"
-                type="number"
-                step="any"
-                value={exitPrice}
-                onChange={(e) => setExitPrice(e.target.value)}
-                placeholder="0.00"
-              />
             </div>
 
             <div className="space-y-2">
