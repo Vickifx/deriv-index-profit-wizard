@@ -95,8 +95,11 @@ export const PipCalculator: React.FC = () => {
     const contract = parseFloat(contractSize);
     const precision = selectedInstrument?.precision || 2;
 
+    if (!entryPrice.trim() || !exitPrice.trim() || !volume.trim() || !contractSize.trim()) {
+      return;
+    }
+
     if (isNaN(entry) || isNaN(exit) || isNaN(vol) || isNaN(contract)) {
-      alert('Please fill all fields with valid numbers.');
       return;
     }
 
@@ -144,7 +147,7 @@ export const PipCalculator: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="symbol">Select Index</Label>
               <Select value={selectedSymbol} onValueChange={setSelectedSymbol}>
@@ -271,7 +274,7 @@ export const PipCalculator: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="text-center p-4 rounded-lg bg-trading-result-bg">
                 <div className="text-sm text-muted-foreground">Pip Value</div>
                 <div className="text-xl font-bold">{formatCurrency(result.pipValue)}</div>

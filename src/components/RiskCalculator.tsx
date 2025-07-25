@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 import { DollarSign, Percent } from 'lucide-react';
 
 interface RiskResult {
@@ -13,19 +14,40 @@ interface RiskResult {
 export const RiskCalculator: React.FC = () => {
   const [tradingCapital, setTradingCapital] = useState('');
   const [riskPercentage, setRiskPercentage] = useState('');
+  const { toast } = useToast();
   const [result, setResult] = useState<RiskResult | null>(null);
 
   const calculate = () => {
-    const capital = parseFloat(tradingCapital);
-    const percentage = parseFloat(riskPercentage);
+    const capitalStr = tradingCapital.trim();
+    const percentageStr = riskPercentage.trim();
 
-    if (isNaN(capital) || isNaN(percentage)) {
-      alert('Please fill all fields with valid numbers.');
+    if (!capitalStr || !percentageStr) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in both trading capital and risk percentage.",
+        variant: "destructive",
+      });
       return;
     }
 
-    if (percentage < 0 || percentage > 100) {
-      alert('Risk percentage must be between 0 and 100.');
+    const capital = parseFloat(capitalStr);
+    const percentage = parseFloat(percentageStr);
+
+    if (isNaN(capital) || capital <= 0) {
+      toast({
+        title: "Invalid Capital",
+        description: "Please enter a valid trading capital amount greater than 0.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (isNaN(percentage) || percentage < 0 || percentage > 100) {
+      toast({
+        title: "Invalid Percentage",
+        description: "Risk percentage must be between 0 and 100.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -57,13 +79,14 @@ export const RiskCalculator: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="capital">Trading Capital ($)</Label>
               <Input
                 id="capital"
                 type="number"
                 step="any"
+                min="0"
                 value={tradingCapital}
                 onChange={(e) => setTradingCapital(e.target.value)}
                 placeholder="10000"
@@ -105,7 +128,7 @@ export const RiskCalculator: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="text-center p-4 rounded-lg bg-trading-result-bg">
                 <div className="text-sm text-muted-foreground">Risk Amount</div>
                 <div className="text-xl font-bold text-trading-loss">{formatCurrency(result.riskAmount)}</div>
