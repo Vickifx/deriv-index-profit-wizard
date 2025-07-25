@@ -1,4 +1,5 @@
 import { PipCalculator } from '@/components/PipCalculator';
+import { RiskCalculator } from '@/components/RiskCalculator';
 import { DarkModeToggle } from '@/components/DarkModeToggle';
 import { AdBanner } from '@/components/AdBanner';
 import { AdSidebar } from '@/components/AdSidebar';
@@ -37,6 +38,10 @@ const Index = () => {
           {/* Main Calculator Content */}
           <div className="lg:col-span-3">
             <PipCalculator />
+            
+            <div className="mt-8">
+              <RiskCalculator />
+            </div>
             
             {/* Content Bottom Ad */}
             <div className="mt-8">
