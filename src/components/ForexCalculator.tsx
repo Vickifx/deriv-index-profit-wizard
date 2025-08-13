@@ -17,27 +17,75 @@ interface ForexCalculationResult {
   isProfit: boolean;
 }
 
-const forexPairs = [
-  { value: 'EURUSD', label: 'EUR/USD', precision: 5, baseUnit: 100000 },
-  { value: 'GBPUSD', label: 'GBP/USD', precision: 5, baseUnit: 100000 },
-  { value: 'USDJPY', label: 'USD/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'USDCHF', label: 'USD/CHF', precision: 5, baseUnit: 100000 },
-  { value: 'AUDUSD', label: 'AUD/USD', precision: 5, baseUnit: 100000 },
-  { value: 'USDCAD', label: 'USD/CAD', precision: 5, baseUnit: 100000 },
-  { value: 'NZDUSD', label: 'NZD/USD', precision: 5, baseUnit: 100000 },
-  { value: 'EURGBP', label: 'EUR/GBP', precision: 5, baseUnit: 100000 },
-  { value: 'EURJPY', label: 'EUR/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'GBPJPY', label: 'GBP/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'XAUUSD', label: 'Gold/USD (XAU/USD)', precision: 2, baseUnit: 100 },
-  { value: 'XAGUSD', label: 'Silver/USD (XAG/USD)', precision: 3, baseUnit: 5000 },
-  { value: 'EURCHF', label: 'EUR/CHF', precision: 5, baseUnit: 100000 },
-  { value: 'GBPCHF', label: 'GBP/CHF', precision: 5, baseUnit: 100000 },
-  { value: 'AUDCAD', label: 'AUD/CAD', precision: 5, baseUnit: 100000 },
-  { value: 'AUDCHF', label: 'AUD/CHF', precision: 5, baseUnit: 100000 },
-  { value: 'AUDJPY', label: 'AUD/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'CADJPY', label: 'CAD/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'CHFJPY', label: 'CHF/JPY', precision: 3, baseUnit: 100000 },
-  { value: 'EURAUD', label: 'EUR/AUD', precision: 5, baseUnit: 100000 }
+const forexPairCategories = {
+  majors: [
+    { value: 'EURUSD', label: 'EUR/USD', precision: 5, baseUnit: 100000 },
+    { value: 'GBPUSD', label: 'GBP/USD', precision: 5, baseUnit: 100000 },
+    { value: 'USDJPY', label: 'USD/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'USDCHF', label: 'USD/CHF', precision: 5, baseUnit: 100000 },
+    { value: 'AUDUSD', label: 'AUD/USD', precision: 5, baseUnit: 100000 },
+    { value: 'USDCAD', label: 'USD/CAD', precision: 5, baseUnit: 100000 },
+    { value: 'NZDUSD', label: 'NZD/USD', precision: 5, baseUnit: 100000 },
+  ],
+  minors: [
+    { value: 'EURGBP', label: 'EUR/GBP', precision: 5, baseUnit: 100000 },
+    { value: 'EURJPY', label: 'EUR/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'GBPJPY', label: 'GBP/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'EURCHF', label: 'EUR/CHF', precision: 5, baseUnit: 100000 },
+    { value: 'GBPCHF', label: 'GBP/CHF', precision: 5, baseUnit: 100000 },
+    { value: 'AUDCAD', label: 'AUD/CAD', precision: 5, baseUnit: 100000 },
+    { value: 'AUDCHF', label: 'AUD/CHF', precision: 5, baseUnit: 100000 },
+    { value: 'AUDJPY', label: 'AUD/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'CADJPY', label: 'CAD/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'CHFJPY', label: 'CHF/JPY', precision: 3, baseUnit: 100000 },
+    { value: 'EURAUD', label: 'EUR/AUD', precision: 5, baseUnit: 100000 },
+    { value: 'EURCAD', label: 'EUR/CAD', precision: 5, baseUnit: 100000 },
+    { value: 'GBPAUD', label: 'GBP/AUD', precision: 5, baseUnit: 100000 },
+    { value: 'GBPCAD', label: 'GBP/CAD', precision: 5, baseUnit: 100000 },
+    { value: 'GBPNZD', label: 'GBP/NZD', precision: 5, baseUnit: 100000 },
+    { value: 'AUDNZD', label: 'AUD/NZD', precision: 5, baseUnit: 100000 },
+    { value: 'NZDCAD', label: 'NZD/CAD', precision: 5, baseUnit: 100000 },
+    { value: 'NZDCHF', label: 'NZD/CHF', precision: 5, baseUnit: 100000 },
+    { value: 'NZDJPY', label: 'NZD/JPY', precision: 3, baseUnit: 100000 },
+  ],
+  metals: [
+    { value: 'XAUUSD', label: 'XAU/USD (Gold)', precision: 2, baseUnit: 100 },
+    { value: 'XAGUSD', label: 'XAG/USD (Silver)', precision: 3, baseUnit: 5000 },
+    { value: 'XPTUSD', label: 'XPT/USD (Platinum)', precision: 2, baseUnit: 100 },
+    { value: 'XPDUSD', label: 'XPD/USD (Palladium)', precision: 2, baseUnit: 100 },
+  ],
+  crypto: [
+    { value: 'BTCUSD', label: 'BTC/USD', precision: 2, baseUnit: 1 },
+    { value: 'ETHUSD', label: 'ETH/USD', precision: 2, baseUnit: 10 },
+    { value: 'LTCUSD', label: 'LTC/USD', precision: 2, baseUnit: 100 },
+    { value: 'ADAUSD', label: 'ADA/USD', precision: 5, baseUnit: 10000 },
+    { value: 'DOTUSD', label: 'DOT/USD', precision: 3, baseUnit: 1000 },
+    { value: 'XRPUSD', label: 'XRP/USD', precision: 5, baseUnit: 10000 },
+  ],
+  energies: [
+    { value: 'USOIL', label: 'US Oil (WTI)', precision: 2, baseUnit: 1000 },
+    { value: 'UKOIL', label: 'UK Oil (Brent)', precision: 2, baseUnit: 1000 },
+    { value: 'NGAS', label: 'Natural Gas', precision: 3, baseUnit: 10000 },
+  ],
+  stocks: [
+    { value: 'SPX500', label: 'S&P 500', precision: 1, baseUnit: 50 },
+    { value: 'NAS100', label: 'NASDAQ 100', precision: 1, baseUnit: 20 },
+    { value: 'US30', label: 'Dow Jones 30', precision: 0, baseUnit: 5 },
+    { value: 'UK100', label: 'FTSE 100', precision: 0, baseUnit: 10 },
+    { value: 'GER30', label: 'DAX 30', precision: 0, baseUnit: 25 },
+    { value: 'FRA40', label: 'CAC 40', precision: 0, baseUnit: 10 },
+    { value: 'JPN225', label: 'Nikkei 225', precision: 0, baseUnit: 500 },
+    { value: 'AUS200', label: 'ASX 200', precision: 0, baseUnit: 25 },
+  ]
+};
+
+const allForexPairs = [
+  ...forexPairCategories.majors,
+  ...forexPairCategories.minors,
+  ...forexPairCategories.metals,
+  ...forexPairCategories.crypto,
+  ...forexPairCategories.energies,
+  ...forexPairCategories.stocks
 ];
 
 export const ForexCalculator: React.FC = () => {
@@ -48,7 +96,7 @@ export const ForexCalculator: React.FC = () => {
   const [lotSize, setLotSize] = useState('1');
   const [result, setResult] = useState<ForexCalculationResult | null>(null);
 
-  const selectedForexPair = forexPairs.find(pair => pair.value === selectedPair);
+  const selectedForexPair = allForexPairs.find(pair => pair.value === selectedPair);
 
   const calculate = () => {
     const entry = parseFloat(entryPrice);
@@ -128,10 +176,19 @@ export const ForexCalculator: React.FC = () => {
                   <SelectValue placeholder="Select a currency pair" />
                 </SelectTrigger>
                 <SelectContent>
-                  {forexPairs.map((pair) => (
-                    <SelectItem key={pair.value} value={pair.value}>
-                      {pair.label}
-                    </SelectItem>
+                  {Object.entries(forexPairCategories).map(([category, pairs]) => (
+                    <div key={category}>
+                      <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground capitalize">
+                        {category === 'majors' ? 'Forex Major' : 
+                         category === 'minors' ? 'Forex Minor' : 
+                         category}
+                      </div>
+                      {pairs.map((pair) => (
+                        <SelectItem key={pair.value} value={pair.value}>
+                          {pair.label}
+                        </SelectItem>
+                      ))}
+                    </div>
                   ))}
                 </SelectContent>
               </Select>

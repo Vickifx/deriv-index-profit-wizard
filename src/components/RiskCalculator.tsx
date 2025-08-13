@@ -10,26 +10,26 @@ import { DollarSign, Percent, Shield } from 'lucide-react';
 interface RiskResult {
   riskAmount: number;
   remainingCapital: number;
-  stopLossPips?: number;
-  pipValue?: number;
+  stopLossPips: number;
+  pipValue: number;
 }
 
 export const RiskCalculator: React.FC = () => {
   const [tradingCapital, setTradingCapital] = useState('');
   const [riskPercentage, setRiskPercentage] = useState('');
-  const [pipValue, setPipValue] = useState('');
+  const [lotSize, setLotSize] = useState('');
   const { toast } = useToast();
   const [result, setResult] = useState<RiskResult | null>(null);
 
   const calculate = () => {
     const capitalStr = tradingCapital.trim();
     const percentageStr = riskPercentage.trim();
-    const pipValueStr = pipValue.trim();
+    const lotSizeStr = lotSize.trim();
 
-    if (!capitalStr || !percentageStr) {
+    if (!capitalStr || !percentageStr || !lotSizeStr) {
       toast({
         title: "Missing Information",
-        description: "Please fill in both trading capital and risk percentage.",
+        description: "Please fill in trading capital, risk percentage, and lot size.",
         variant: "destructive",
       });
       return;
@@ -37,6 +37,7 @@ export const RiskCalculator: React.FC = () => {
 
     const capital = parseFloat(capitalStr);
     const percentage = parseFloat(percentageStr);
+    const lots = parseFloat(lotSizeStr);
 
     if (isNaN(capital) || capital <= 0) {
       toast({
@@ -56,25 +57,29 @@ export const RiskCalculator: React.FC = () => {
       return;
     }
 
+    if (isNaN(lots) || lots <= 0) {
+      toast({
+        title: "Invalid Lot Size",
+        description: "Please enter a valid lot size greater than 0.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     const riskAmount = (capital * percentage) / 100;
     const remainingCapital = capital - riskAmount;
 
-    let stopLossPips: number | undefined;
-    let pipValueNum: number | undefined;
-
-    // Calculate stop loss pips if pip value is provided
-    if (pipValueStr) {
-      pipValueNum = parseFloat(pipValueStr);
-      if (!isNaN(pipValueNum) && pipValueNum > 0) {
-        stopLossPips = riskAmount / pipValueNum;
-      }
-    }
+    // Calculate pip value automatically (standard forex: $10 per pip for 1 lot)
+    const pipValue = lots * 10;
+    
+    // Calculate stop loss pips
+    const stopLossPips = riskAmount / pipValue;
 
     setResult({
       riskAmount,
       remainingCapital,
       stopLossPips,
-      pipValue: pipValueNum
+      pipValue
     });
   };
 
@@ -125,19 +130,19 @@ export const RiskCalculator: React.FC = () => {
               />
             </div>
 
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="pipvalue">Pip Value ($) - Optional for Stop Loss Calculation</Label>
+            <div className="space-y-2">
+              <Label htmlFor="lotsize">Lot Size</Label>
               <Input
-                id="pipvalue"
+                id="lotsize"
                 type="number"
                 step="any"
                 min="0"
-                value={pipValue}
-                onChange={(e) => setPipValue(e.target.value)}
-                placeholder="10"
+                value={lotSize}
+                onChange={(e) => setLotSize(e.target.value)}
+                placeholder="1.0"
               />
               <p className="text-xs text-muted-foreground">
-                Enter the pip value to calculate recommended stop loss in pips
+                Standard lot size for pip value calculation
               </p>
             </div>
           </div>
@@ -162,7 +167,7 @@ export const RiskCalculator: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="text-center p-4 rounded-lg bg-trading-result-bg">
                 <div className="text-sm text-muted-foreground">Risk Amount</div>
                 <div className="text-xl font-bold text-trading-loss">{formatCurrency(result.riskAmount)}</div>
@@ -173,15 +178,18 @@ export const RiskCalculator: React.FC = () => {
                 <div className="text-xl font-bold text-trading-profit">{formatCurrency(result.remainingCapital)}</div>
               </div>
 
-              {result.stopLossPips && (
-                <div className="text-center p-4 rounded-lg bg-trading-result-bg">
-                  <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
-                    <Shield className="h-3 w-3" />
-                    Stop Loss (Pips)
-                  </div>
-                  <div className="text-xl font-bold text-orange-600">{result.stopLossPips.toFixed(1)}</div>
+              <div className="text-center p-4 rounded-lg bg-trading-result-bg">
+                <div className="text-sm text-muted-foreground">Pip Value</div>
+                <div className="text-xl font-bold text-primary">{formatCurrency(result.pipValue)}</div>
+              </div>
+              
+              <div className="text-center p-4 rounded-lg bg-trading-result-bg">
+                <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                  <Shield className="h-3 w-3" />
+                  Stop Loss (Pips)
                 </div>
-              )}
+                <div className="text-xl font-bold text-orange-600">{result.stopLossPips.toFixed(1)}</div>
+              </div>
             </div>
           </CardContent>
         </Card>
