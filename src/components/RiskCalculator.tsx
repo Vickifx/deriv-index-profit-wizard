@@ -1,25 +1,30 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { DollarSign, Percent } from 'lucide-react';
+import { DollarSign, Percent, Shield } from 'lucide-react';
 
 interface RiskResult {
   riskAmount: number;
   remainingCapital: number;
+  stopLossPips?: number;
+  pipValue?: number;
 }
 
 export const RiskCalculator: React.FC = () => {
   const [tradingCapital, setTradingCapital] = useState('');
   const [riskPercentage, setRiskPercentage] = useState('');
+  const [pipValue, setPipValue] = useState('');
   const { toast } = useToast();
   const [result, setResult] = useState<RiskResult | null>(null);
 
   const calculate = () => {
     const capitalStr = tradingCapital.trim();
     const percentageStr = riskPercentage.trim();
+    const pipValueStr = pipValue.trim();
 
     if (!capitalStr || !percentageStr) {
       toast({
@@ -54,9 +59,22 @@ export const RiskCalculator: React.FC = () => {
     const riskAmount = (capital * percentage) / 100;
     const remainingCapital = capital - riskAmount;
 
+    let stopLossPips: number | undefined;
+    let pipValueNum: number | undefined;
+
+    // Calculate stop loss pips if pip value is provided
+    if (pipValueStr) {
+      pipValueNum = parseFloat(pipValueStr);
+      if (!isNaN(pipValueNum) && pipValueNum > 0) {
+        stopLossPips = riskAmount / pipValueNum;
+      }
+    }
+
     setResult({
       riskAmount,
-      remainingCapital
+      remainingCapital,
+      stopLossPips,
+      pipValue: pipValueNum
     });
   };
 
@@ -75,7 +93,7 @@ export const RiskCalculator: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Percent className="h-5 w-5" />
-            Risk Calculator
+            Risk Calculator with Stop Loss
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -106,6 +124,22 @@ export const RiskCalculator: React.FC = () => {
                 placeholder="2"
               />
             </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="pipvalue">Pip Value ($) - Optional for Stop Loss Calculation</Label>
+              <Input
+                id="pipvalue"
+                type="number"
+                step="any"
+                min="0"
+                value={pipValue}
+                onChange={(e) => setPipValue(e.target.value)}
+                placeholder="10"
+              />
+              <p className="text-xs text-muted-foreground">
+                Enter the pip value to calculate recommended stop loss in pips
+              </p>
+            </div>
           </div>
 
           <Button 
@@ -114,7 +148,7 @@ export const RiskCalculator: React.FC = () => {
             size="lg"
           >
             <DollarSign className="mr-2 h-4 w-4" />
-            Calculate Risk Amount
+            Calculate Risk & Stop Loss
           </Button>
         </CardContent>
       </Card>
@@ -128,7 +162,7 @@ export const RiskCalculator: React.FC = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <div className="text-center p-4 rounded-lg bg-trading-result-bg">
                 <div className="text-sm text-muted-foreground">Risk Amount</div>
                 <div className="text-xl font-bold text-trading-loss">{formatCurrency(result.riskAmount)}</div>
@@ -138,6 +172,16 @@ export const RiskCalculator: React.FC = () => {
                 <div className="text-sm text-muted-foreground">Remaining Capital</div>
                 <div className="text-xl font-bold text-trading-profit">{formatCurrency(result.remainingCapital)}</div>
               </div>
+
+              {result.stopLossPips && (
+                <div className="text-center p-4 rounded-lg bg-trading-result-bg">
+                  <div className="text-sm text-muted-foreground flex items-center justify-center gap-1">
+                    <Shield className="h-3 w-3" />
+                    Stop Loss (Pips)
+                  </div>
+                  <div className="text-xl font-bold text-orange-600">{result.stopLossPips.toFixed(1)}</div>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
