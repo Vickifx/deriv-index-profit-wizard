@@ -25,10 +25,10 @@ const Index = () => {
         </div>
 
         <div className="space-y-8">
-          {/* Deriv Indices Calculator */}
+          {/* Index Calculator */}
           <PipCalculator />
           
-          {/* Forex Calculator */}
+          {/* Currency Pair Calculator */}
           <ForexCalculator />
           
           {/* Risk Calculator */}

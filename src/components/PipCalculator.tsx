@@ -143,7 +143,7 @@ export const PipCalculator: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="h-5 w-5" />
-            Trading Parameters
+            Index Calculator
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
