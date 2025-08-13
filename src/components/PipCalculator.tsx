@@ -154,7 +154,7 @@ export const PipCalculator: React.FC = () => {
                 <SelectTrigger>
                   <SelectValue placeholder="Select an index" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[300px] overflow-y-auto" side="bottom" align="start" sideOffset={4}>
                   {tradingInstruments.map((instrument) => (
                     <SelectItem key={instrument.value} value={instrument.value}>
                       {instrument.label}

@@ -175,7 +175,7 @@ export const ForexCalculator: React.FC = () => {
                 <SelectTrigger>
                   <SelectValue placeholder="Select a currency pair" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="max-h-[300px] overflow-y-auto" side="bottom" align="start" sideOffset={4}>
                   {Object.entries(forexPairCategories).map(([category, pairs]) => (
                     <div key={category}>
                       <div className="px-2 py-1.5 text-sm font-semibold text-muted-foreground capitalize">
